@@ -16,15 +16,25 @@ const modalClose = document.querySelector('.modal-close');
 const openModal = function() {
 	modalCart.classList.add('show');
 }
-
-const closeModal = function(e) {
-	if (!e.target.closest('.modal') || e.target.matches('.modal-close')) {
+const closeModal = function() {
 	modalCart.classList.remove('show');
-	}
 }
 
 buttonCart.addEventListener('click', openModal);
-modalCart.addEventListener('click', closeModal);
+
+//solution 1
+// modalCart.addEventListener('click', (e) => {
+// 	if (e.target.classList.contains('overlay') || e.target.classList.contains('modal-close')) {
+// 		closeModal();
+// 	}
+// });
+
+//solution 2
+modalCart.addEventListener('click', (e) => {
+	if (!e.target.closest('.modal') || e.target.matches('.modal-close')) {
+		closeModal();
+	}
+});
 
 //scroll smooth
 (function() {
