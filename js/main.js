@@ -18,11 +18,13 @@ const openModal = function() {
 }
 
 const closeModal = function(e) {
+	if (!e.target.closest('.modal') || e.target.matches('.modal-close')) {
 	modalCart.classList.remove('show');
+	}
 }
 
 buttonCart.addEventListener('click', openModal);
-modalClose.addEventListener('click', closeModal);
+modalCart.addEventListener('click', closeModal);
 
 //scroll smooth
 (function() {
