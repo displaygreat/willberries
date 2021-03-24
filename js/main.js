@@ -127,6 +127,10 @@ const renderCards = function (data) {
 more.addEventListener('click', function (event) {
 	event.preventDefault();
 	getGoods().then(renderCards);
+	document.querySelector('#body').scrollIntoView({
+		behavior: 'smooth',
+		block: 'start'
+	})
 })
 
 const filterCards = function (field, value) {
@@ -147,3 +151,29 @@ navigationLink.forEach(function (link) {
 		filterCards(field, value)
 	})
 });
+
+//hw 2
+const navLinkAll = document.querySelector('.navigation-item:last-child .navigation-link');
+navLinkAll.addEventListener('click', function(event) {
+	event.preventDefault();
+	getGoods().then(renderCards);
+})
+
+const btnText = document.querySelectorAll('.special-offers .button-text');
+const arrBtnText = [...btnText];
+const btnViewAll = arrBtnText.filter(function(btn) {
+	console.log(btn);
+	return btn.innerHTML === 'View all' 
+})
+btnViewAll.forEach(function(link) {
+	link.addEventListener('click', function(event) {
+		event.preventDefault();
+		const field = link.dataset.field;
+		const value = link.dataset.value;
+		filterCards(field, value);
+		document.querySelector('#body').scrollIntoView({
+			behavior: 'smooth',
+			block: 'start'
+		})
+	})
+})
