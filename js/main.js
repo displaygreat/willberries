@@ -70,8 +70,9 @@ modalCart.addEventListener('click', (e) => {
 }
 
 //goods
-const more = document.querySelector('.more');
-const navigationLink = document.querySelectorAll('.navigation-link');
+// const more = document.querySelector('.more');
+const viewAll = document.querySelectorAll('.view-all');
+const navigationLink = document.querySelectorAll('.navigation-link:not(.view-all)');
 const longGoodsList = document.querySelector('.long-goods-list');
 
 //solution 1 to response
@@ -124,13 +125,13 @@ const renderCards = function (data) {
 	document.body.classList.add('show-goods');
 }
 
-more.addEventListener('click', function (event) {
+const showAll = function(event) {
 	event.preventDefault();
 	getGoods().then(renderCards);
-	document.querySelector('#body').scrollIntoView({
-		behavior: 'smooth',
-		block: 'start'
-	})
+}
+
+viewAll.forEach(function(elem) {
+	elem.addEventListener('click', showAll)
 })
 
 const filterCards = function (field, value) {
@@ -152,28 +153,38 @@ navigationLink.forEach(function (link) {
 	})
 });
 
-//hw 2
-const navLinkAll = document.querySelector('.navigation-item:last-child .navigation-link');
-navLinkAll.addEventListener('click', function(event) {
-	event.preventDefault();
-	getGoods().then(renderCards);
-})
+const showAccessories = document.querySelectorAll('.show-accessories');
+const showClothing = document.querySelectorAll('.show-clothing');
 
-const btnText = document.querySelectorAll('.special-offers .button-text');
-const arrBtnText = [...btnText];
-const btnViewAll = arrBtnText.filter(function(btn) {
-	console.log(btn);
-	return btn.innerHTML === 'View all' 
-})
-btnViewAll.forEach(function(link) {
-	link.addEventListener('click', function(event) {
+showAccessories.forEach(item => {
+	item.addEventListener('click', event => {
 		event.preventDefault();
-		const field = link.dataset.field;
-		const value = link.dataset.value;
-		filterCards(field, value);
-		document.querySelector('#body').scrollIntoView({
-			behavior: 'smooth',
-			block: 'start'
-		})
+		filterCards('category', 'Accessories')
 	})
 })
+showClothing.forEach(item => {
+	item.addEventListener('click', event => {
+		event.preventDefault();
+		filterCards('category', 'Clothing')
+	})
+})
+
+//hw 2
+
+// const btnText = document.querySelectorAll('.special-offers .button-text');
+// const arrBtnText = [...btnText];
+// const btnViewAll = arrBtnText.filter(function(btn) {
+// 	return btn.innerHTML === 'View all' 
+// })
+// btnViewAll.forEach(function(link) {
+// 	link.addEventListener('click', function(event) {
+// 		event.preventDefault();
+// 		const field = link.dataset.field;
+// 		const value = link.dataset.value;
+// 		filterCards(field, value);
+// 		document.querySelector('#body').scrollIntoView({
+// 			behavior: 'smooth',
+// 			block: 'start'
+// 		})
+// 	})
+// })
