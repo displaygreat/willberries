@@ -31,6 +31,9 @@ const getGoods = async function() {
 
 const cart = {
 	cartGoods: [],
+	getCountCartGoods() {
+		return this.cartGoods.length;
+	},
   countQuantity() {
     cartCount.textContent = this.cartGoods.reduce((acc, item) => {
       return acc + item.count;
@@ -236,25 +239,47 @@ const postData = dataUser => fetch('server.php', {
 	body: dataUser
 });
 
+const validForm = (formData) => {
+	let valid = false;
+	 for (const [, value] of formData) {
+		if (value.trim()) {
+			return valid = true;
+		} else {
+			return valid = false;
+			break;
+		}
+	}
+}
+
 modalForm.addEventListener('submit', event => {
 	event.preventDefault();
 	const formData = new FormData(modalForm);
-	formData.append('cart', JSON.stringify(cart.cartGoods))
-	postData(formData)
-		.then(response => {
-			if(!response.ok) {
-				throw new Error(response.status);
-			}
-			alert('Your order has been sent')
-		})
-		.catch(error => {
-			alert('An error has occurred, try again later');
-			console.error(error);
-		})
-		.finally(() => {
-			closeModal();
-			modalForm.reset();
-			cart.cartGoods.length = 0;
-			cart.clearCart();
-		})
+
+	if (validForm(formData) && cart.getCountCartGoods()) {
+		formData.append('cart', JSON.stringify(cart.cartGoods))
+		postData(formData)
+			.then(response => {
+				if(!response.ok) {
+					throw new Error(response.status);
+				}
+				alert('Your order has been sent')
+			})
+			.catch(error => {
+				alert('An error has occurred, try again later');
+				console.error(error);
+			})
+			.finally(() => {
+				closeModal();
+				modalForm.reset();
+				cart.cartGoods.length = 0;
+				cart.clearCart();
+			}) 
+	} else {
+		if (!cart.getCountCartGoods()) {
+			alert('Add goods to cart')
+		}
+		if (!validForm(formData)) {
+			alert ('All the fields are required')
+		}
+	}
 })
