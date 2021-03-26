@@ -30,7 +30,12 @@ const getGoods = async function() {
 // 	})
 
 const cart = {
-	cartGoods: [],
+	// cartGoods: [],
+	//solution 2 with local storage
+	cartGoods: JSON.parse(localStorage.getItem('cartWillberries')) || [],
+	updateLocalStorage() {
+		localStorage.setItem('cartWillberries', JSON.stringify(this.cartGoods))
+	},
 	getCountCartGoods() {
 		return this.cartGoods.length;
 	},
@@ -42,6 +47,7 @@ const cart = {
   clearCart() {
     this.cartGoods.length = 0;
     this.countQuantity();
+		this.updateLocalStorage();
     this.renderCart();
   },
 	renderCart(){
@@ -68,6 +74,8 @@ const cart = {
 	},
 	deleteGood(id){
 		this.cartGoods = this.cartGoods.filter(item => id !== item.id);
+		this.countQuantity();
+		this.updateLocalStorage();
 		this.renderCart();
 	},
 	minusGood(id){
@@ -82,8 +90,9 @@ const cart = {
 				break;
 			}
 		}
-		this.renderCart();
     this.countQuantity();
+		this.updateLocalStorage();
+		this.renderCart();
 	},
 	plusGood(id){
 		for (const item of this.cartGoods) {
@@ -92,8 +101,9 @@ const cart = {
 				break;
 			}
 		}
-		this.renderCart();
     this.countQuantity();
+		this.updateLocalStorage();
+		this.renderCart();
 	},
 	addCartGoods(id){
 		const goodItem = this.cartGoods.find(item => item.id === id);
@@ -110,6 +120,7 @@ const cart = {
 						count: 1
 					})
           this.countQuantity();
+					this.updateLocalStorage();
 				})
 		}
 		console.log(goodItem);
@@ -256,8 +267,21 @@ modalForm.addEventListener('submit', event => {
 	const formData = new FormData(modalForm);
 
 	if (validForm(formData) && cart.getCountCartGoods()) {
-		formData.append('cart', JSON.stringify(cart.cartGoods))
-		postData(formData)
+
+		const data = {};
+		for (const [name, value] of formData) {
+			data[name] = value;
+		}
+		
+		data.cart = cart.cartGoods;
+
+		console.log(JSON.stringify(data));
+		//solution 1
+		// formData.append('cart', JSON.stringify(cart.cartGoods))
+		// postData(formData)
+
+		//solution 2
+		postData(JSON.stringify(data))
 			.then(response => {
 				if(!response.ok) {
 					throw new Error(response.status);
