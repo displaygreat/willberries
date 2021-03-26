@@ -33,8 +33,6 @@ const cart = {
 	cartGoods: [],
   countQuantity() {
     cartCount.textContent = this.cartGoods.reduce((acc, item) => {
-      console.log(acc);
-      console.log(item);
       return acc + item.count;
     }, 0)
   },
@@ -229,4 +227,34 @@ showClothing.forEach(item => {
 		event.preventDefault();
 		filterCards('category', 'Clothing')
 	})
+})
+
+const modalForm = document.querySelector('.modal-form');
+
+const postData = dataUser => fetch('server.php', {
+	method: 'POST',
+	body: dataUser
+});
+
+modalForm.addEventListener('submit', event => {
+	event.preventDefault();
+	const formData = new FormData(modalForm);
+	formData.append('cart', JSON.stringify(cart.cartGoods))
+	postData(formData)
+		.then(response => {
+			if(!response.ok) {
+				throw new Error(response.status);
+			}
+			alert('Your order has been sent')
+		})
+		.catch(error => {
+			alert('An error has occurred, try again later');
+			console.error(error);
+		})
+		.finally(() => {
+			closeModal();
+			modalForm.reset();
+			cart.cartGoods.length = 0;
+			cart.clearCart();
+		})
 })
